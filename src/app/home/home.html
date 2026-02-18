@@ -1,0 +1,10 @@
+<div class="home-container">
+  <header>
+    <h1>Welcome to Imagine</h1>
+    <button (click)="onLogout()">Sign Out</button>
+  </header>
+
+  @if (currentUser()) {
+    <p>Signed in as {{ currentUser()?.email }}</p>
+  }
+</div>

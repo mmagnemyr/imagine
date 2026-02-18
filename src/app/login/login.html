@@ -1,0 +1,54 @@
+<div class="login-container">
+  <h1>{{ isRegistering() ? 'Create Account' : 'Sign In' }}</h1>
+
+  @if (errorMessage()) {
+    <div class="error" role="alert">{{ errorMessage() }}</div>
+  }
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+      />
+      @if (loginForm.controls.email.touched && loginForm.controls.email.invalid) {
+        <small class="field-error">Valid email is required</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        autocomplete="current-password"
+      />
+      @if (loginForm.controls.password.touched && loginForm.controls.password.invalid) {
+        <small class="field-error">Password must be at least 6 characters</small>
+      }
+    </div>
+
+    <button type="submit" [disabled]="loginForm.invalid || isLoading()">
+      {{ isLoading() ? 'Please wait...' : (isRegistering() ? 'Register' : 'Sign In') }}
+    </button>
+  </form>
+
+  <div class="divider">
+    <span>or</span>
+  </div>
+
+  <button class="google-btn" (click)="onGoogleSignIn()" [disabled]="isLoading()">
+    Sign in with Google
+  </button>
+
+  <p class="toggle">
+    {{ isRegistering() ? 'Already have an account?' : "Don't have an account?" }}
+    <a (click)="toggleMode()" (keyup.enter)="toggleMode()" tabindex="0">
+      {{ isRegistering() ? 'Sign in' : 'Register' }}
+    </a>
+  </p>
+</div>
