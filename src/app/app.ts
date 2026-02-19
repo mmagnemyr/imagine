@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { UpdateService } from './update/update.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,10 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App {}
+export class App implements OnInit {
+  protected readonly updateService = inject(UpdateService);
+
+  ngOnInit() {
+    this.updateService.init();
+  }
+}

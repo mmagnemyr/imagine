@@ -1,1 +1,8 @@
 <router-outlet />
+
+@if (updateService.updateAvailable()) {
+  <div class="snackbar">
+    A new version is available.
+    <button type="button" (click)="updateService.reload()">Reload</button>
+  </div>
+}
