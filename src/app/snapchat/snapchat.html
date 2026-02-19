@@ -22,126 +22,130 @@
     <div class="upload-content">
       <span class="upload-icon">+</span>
       <span class="upload-text">Drop Snapchat JSON files here or click to browse</span>
-      <span class="upload-hint">Supports Spotlight and Saved Stories exports</span>
+      <span class="upload-hint">Supports Spotlight and Saved Stories exports — saved automatically</span>
     </div>
   </div>
 
-  @for (report of reports(); track $index) {
-    @if (report.type === 'spotlight') {
-      <section class="report-section">
-        <div class="section-header">
-          <h2>Spotlight</h2>
-          <span class="date-range-label">{{ asSpotlight(report).summary.startTime.slice(0, 10) }} — {{ asSpotlight(report).summary.endTime.slice(0, 10) }}</span>
-          <button type="button" class="btn-remove" (click)="removeReport($index)">Remove</button>
-        </div>
+  @if (isLoading()) {
+    <div class="loading">Loading saved reports...</div>
+  } @else {
+    @for (saved of savedReports(); track saved.docId) {
+      @if (saved.report.type === 'spotlight') {
+        <section class="report-section">
+          <div class="section-header">
+            <h2>Spotlight</h2>
+            <span class="date-range-label">{{ asSpotlight(saved.report).summary.startTime.slice(0, 10) }} — {{ asSpotlight(saved.report).summary.endTime.slice(0, 10) }}</span>
+            <button type="button" class="btn-remove" (click)="removeReport(saved.docId)">Remove</button>
+          </div>
 
-        <div class="stats-grid">
-          <div class="stat-card highlight">
-            <span class="stat-label">Views</span>
-            <span class="stat-value">{{ asSpotlight(report).summary.views | number }}</span>
+          <div class="stats-grid">
+            <div class="stat-card highlight">
+              <span class="stat-label">Views</span>
+              <span class="stat-value">{{ asSpotlight(saved.report).summary.views | number }}</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Unique Viewers</span>
+              <span class="stat-value">{{ asSpotlight(saved.report).summary.uniques | number }}</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Favorites</span>
+              <span class="stat-value">{{ asSpotlight(saved.report).summary.favorites | number }}</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Shares</span>
+              <span class="stat-value">{{ asSpotlight(saved.report).summary.shares | number }}</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Followers Gained</span>
+              <span class="stat-value">{{ asSpotlight(saved.report).summary.subsGained | number }}</span>
+            </div>
           </div>
-          <div class="stat-card">
-            <span class="stat-label">Unique Viewers</span>
-            <span class="stat-value">{{ asSpotlight(report).summary.uniques | number }}</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Favorites</span>
-            <span class="stat-value">{{ asSpotlight(report).summary.favorites | number }}</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Shares</span>
-            <span class="stat-value">{{ asSpotlight(report).summary.shares | number }}</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Followers Gained</span>
-            <span class="stat-value">{{ asSpotlight(report).summary.subsGained | number }}</span>
-          </div>
-        </div>
 
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th class="th-rank">#</th>
-                <th>Spotlight ID</th>
-                <th class="th-num">Views</th>
-                <th class="th-num">Uniques</th>
-                <th class="th-num">Favorites</th>
-                <th class="th-num">Shares</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (item of asSpotlight(report).items; track item.id; let i = $index) {
+          <div class="table-wrapper">
+            <table>
+              <thead>
                 <tr>
-                  <td class="td-rank">{{ i + 1 }}</td>
-                  <td class="td-id">{{ item.id }}</td>
-                  <td class="td-num">{{ item.views | number }}</td>
-                  <td class="td-num">{{ item.uniques | number }}</td>
-                  <td class="td-num">{{ item.favorites | number }}</td>
-                  <td class="td-num">{{ item.shares | number }}</td>
+                  <th class="th-rank">#</th>
+                  <th>Spotlight ID</th>
+                  <th class="th-num">Views</th>
+                  <th class="th-num">Uniques</th>
+                  <th class="th-num">Favorites</th>
+                  <th class="th-num">Shares</th>
                 </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </section>
+              </thead>
+              <tbody>
+                @for (item of asSpotlight(saved.report).items; track item.id; let i = $index) {
+                  <tr>
+                    <td class="td-rank">{{ i + 1 }}</td>
+                    <td class="td-id">{{ item.id }}</td>
+                    <td class="td-num">{{ item.views | number }}</td>
+                    <td class="td-num">{{ item.uniques | number }}</td>
+                    <td class="td-num">{{ item.favorites | number }}</td>
+                    <td class="td-num">{{ item.shares | number }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+      }
+
+      @if (saved.report.type === 'savedStory') {
+        <section class="report-section">
+          <div class="section-header">
+            <h2>Saved Stories</h2>
+            <span class="date-range-label">{{ asSavedStory(saved.report).summary.startTime.slice(0, 10) }} — {{ asSavedStory(saved.report).summary.endTime.slice(0, 10) }}</span>
+            <button type="button" class="btn-remove" (click)="removeReport(saved.docId)">Remove</button>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card highlight">
+              <span class="stat-label">Views</span>
+              <span class="stat-value">{{ asSavedStory(saved.report).summary.views | number }}</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Unique Viewers</span>
+              <span class="stat-value">{{ asSavedStory(saved.report).summary.uniques | number }}</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Avg View Time</span>
+              <span class="stat-value">{{ asSavedStory(saved.report).summary.avgViewTimeSec | number:'1.1-1' }}s</span>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th class="th-rank">#</th>
+                  <th>Highlight ID</th>
+                  <th class="th-num">Views</th>
+                  <th class="th-num">Uniques</th>
+                  <th class="th-num">Avg View Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of asSavedStory(saved.report).items; track item.id; let i = $index) {
+                  <tr>
+                    <td class="td-rank">{{ i + 1 }}</td>
+                    <td class="td-id">{{ item.id }}</td>
+                    <td class="td-num">{{ item.views | number }}</td>
+                    <td class="td-num">{{ item.uniques | number }}</td>
+                    <td class="td-num">{{ item.avgViewTimeSec | number:'1.1-1' }}s</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+      }
     }
 
-    @if (report.type === 'savedStory') {
-      <section class="report-section">
-        <div class="section-header">
-          <h2>Saved Stories</h2>
-          <span class="date-range-label">{{ asSavedStory(report).summary.startTime.slice(0, 10) }} — {{ asSavedStory(report).summary.endTime.slice(0, 10) }}</span>
-          <button type="button" class="btn-remove" (click)="removeReport($index)">Remove</button>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-card highlight">
-            <span class="stat-label">Views</span>
-            <span class="stat-value">{{ asSavedStory(report).summary.views | number }}</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Unique Viewers</span>
-            <span class="stat-value">{{ asSavedStory(report).summary.uniques | number }}</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Avg View Time</span>
-            <span class="stat-value">{{ asSavedStory(report).summary.avgViewTimeSec | number:'1.1-1' }}s</span>
-          </div>
-        </div>
-
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th class="th-rank">#</th>
-                <th>Highlight ID</th>
-                <th class="th-num">Views</th>
-                <th class="th-num">Uniques</th>
-                <th class="th-num">Avg View Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (item of asSavedStory(report).items; track item.id; let i = $index) {
-                <tr>
-                  <td class="td-rank">{{ i + 1 }}</td>
-                  <td class="td-id">{{ item.id }}</td>
-                  <td class="td-num">{{ item.views | number }}</td>
-                  <td class="td-num">{{ item.uniques | number }}</td>
-                  <td class="td-num">{{ item.avgViewTimeSec | number:'1.1-1' }}s</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </section>
+    @if (savedReports().length === 0) {
+      <div class="empty-state">
+        <p>No reports saved yet.</p>
+        <p class="empty-hint">Export JSON from Snapchat Insights (Spotlights or Saved Stories) and upload above.</p>
+      </div>
     }
-  }
-
-  @if (reports().length === 0) {
-    <div class="empty-state">
-      <p>No reports loaded yet.</p>
-      <p class="empty-hint">Export JSON from Snapchat Insights (Spotlights or Saved Stories) and upload above.</p>
-    </div>
   }
 </div>

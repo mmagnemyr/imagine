@@ -1,8 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import {
   SnapchatService,
   SnapReport,
+  SavedSnapReport,
   SpotlightReport,
   SavedStoryReport,
 } from './snapchat.service';
@@ -13,12 +14,32 @@ import {
   templateUrl: './snapchat.html',
   styleUrl: './snapchat.scss',
 })
-export class Snapchat {
+export class Snapchat implements OnInit {
   private readonly snapService = inject(SnapchatService);
 
-  protected readonly reports = signal<SnapReport[]>([]);
+  protected readonly savedReports = signal<SavedSnapReport[]>([]);
   protected readonly error = signal('');
+  protected readonly isLoading = signal(true);
   protected readonly isDragging = signal(false);
+
+  async ngOnInit() {
+    await this.loadSaved();
+  }
+
+  private async loadSaved() {
+    this.isLoading.set(true);
+    this.error.set('');
+    try {
+      const reports = await this.snapService.loadReports();
+      this.savedReports.set(reports);
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : 'Failed to load saved reports';
+      this.error.set(message);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -57,7 +78,8 @@ export class Snapchat {
       try {
         const text = await file.text();
         const report = this.snapService.parseJson(text);
-        this.reports.update(list => [...list, report]);
+        const docId = await this.snapService.saveReport(report);
+        this.savedReports.update(list => [{ docId, report }, ...list]);
       } catch (err: unknown) {
         const message =
           err instanceof Error ? err.message : 'Failed to parse file';
@@ -66,8 +88,16 @@ export class Snapchat {
     }
   }
 
-  removeReport(index: number) {
-    this.reports.update(list => list.filter((_, i) => i !== index));
+  async removeReport(docId: string) {
+    this.error.set('');
+    try {
+      await this.snapService.deleteReport(docId);
+      this.savedReports.update(list => list.filter(r => r.docId !== docId));
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : 'Failed to delete report';
+      this.error.set(message);
+    }
   }
 
   asSpotlight(report: SnapReport): SpotlightReport {

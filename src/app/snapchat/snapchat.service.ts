@@ -1,4 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import {
+  Firestore,
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  serverTimestamp,
+} from '@angular/fire/firestore';
+import { AuthService } from '../auth/auth.service';
 
 export interface SpotlightRow {
   id: string;
@@ -36,8 +48,16 @@ export interface SavedStoryReport {
 
 export type SnapReport = SpotlightReport | SavedStoryReport;
 
+export interface SavedSnapReport {
+  docId: string;
+  report: SnapReport;
+}
+
 @Injectable({ providedIn: 'root' })
 export class SnapchatService {
+  private readonly firestore = inject(Firestore);
+  private readonly authService = inject(AuthService);
+
   parseJson(raw: string): SnapReport {
     const data = JSON.parse(raw) as Record<string, string>[];
     if (!Array.isArray(data) || data.length === 0) {
@@ -56,6 +76,35 @@ export class SnapchatService {
     throw new Error(
       'Unrecognized format. Expected a Spotlight or Saved Stories export.',
     );
+  }
+
+  async saveReport(report: SnapReport): Promise<string> {
+    const uid = this.authService.currentUser()?.uid;
+    if (!uid) throw new Error('Not authenticated');
+
+    const ref = collection(this.firestore, 'snapReports');
+    const docRef = await addDoc(ref, {
+      report,
+      createdBy: uid,
+      createdAt: serverTimestamp(),
+    });
+    return docRef.id;
+  }
+
+  async loadReports(): Promise<SavedSnapReport[]> {
+    const ref = collection(this.firestore, 'snapReports');
+    const q = query(ref, orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map(d => ({
+      docId: d.id,
+      report: d.data()['report'] as SnapReport,
+    }));
+  }
+
+  async deleteReport(docId: string): Promise<void> {
+    const ref = doc(this.firestore, 'snapReports', docId);
+    await deleteDoc(ref);
   }
 
   private parseSpotlight(data: Record<string, string>[]): SpotlightReport {
