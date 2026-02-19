@@ -49,6 +49,11 @@ export const routes: Routes = [
             m => m.FormatComparison,
           ),
       },
+      {
+        path: 'snapchat',
+        loadComponent: () =>
+          import('./snapchat/snapchat').then(m => m.Snapchat),
+      },
     ],
   },
   {

@@ -18,6 +18,7 @@ export class Layout {
     { label: 'Growth', path: '/reports/growth' },
     { label: 'Top Performers', path: '/reports/top' },
     { label: 'Shorts vs Videos', path: '/reports/format' },
+    { label: 'Snapchat', path: '/snapchat' },
   ];
 
   async onLogout() {
