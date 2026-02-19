@@ -34,7 +34,7 @@
         <section class="report-section">
           <div class="section-header">
             <h2>Spotlight</h2>
-            <span class="date-range-label">{{ asSpotlight(saved.report).summary.startTime.slice(0, 10) }} — {{ asSpotlight(saved.report).summary.endTime.slice(0, 10) }}</span>
+            <span class="date-range-label">{{ formatDateRange(asSpotlight(saved.report).summary.startTime, asSpotlight(saved.report).summary.endTime) }}</span>
             <button type="button" class="btn-remove" (click)="removeReport(saved.docId)">Remove</button>
           </div>
 
@@ -67,7 +67,7 @@
         <section class="report-section">
           <div class="section-header">
             <h2>Saved Stories</h2>
-            <span class="date-range-label">{{ asSavedStory(saved.report).summary.startTime.slice(0, 10) }} — {{ asSavedStory(saved.report).summary.endTime.slice(0, 10) }}</span>
+            <span class="date-range-label">{{ formatDateRange(asSavedStory(saved.report).summary.startTime, asSavedStory(saved.report).summary.endTime) }}</span>
             <button type="button" class="btn-remove" (click)="removeReport(saved.docId)">Remove</button>
           </div>
 

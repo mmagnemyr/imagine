@@ -16,6 +16,12 @@
       }
     </ul>
     <div class="sidebar-footer">
+      @if (exchangeRate.usdSek(); as rate) {
+        <div class="exchange-rate">
+          <span class="exchange-label">USD/SEK</span>
+          <span class="exchange-value">{{ rate.rate | number:'1.2-2' }}</span>
+        </div>
+      }
       <span class="user-email">{{ authService.currentUser()?.email }}</span>
       <button class="btn-outline" (click)="onLogout()">Sign Out</button>
     </div>

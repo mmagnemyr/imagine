@@ -107,4 +107,25 @@ export class Snapchat implements OnInit, OnDestroy {
   asSavedStory(report: SnapReport): SavedStoryReport {
     return report as SavedStoryReport;
   }
+
+  formatDateRange(startTime: string, endTime: string): string {
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+
+    // Check if range spans exactly one calendar month
+    if (
+      start.getDate() === 1 &&
+      end.getDate() === 1 &&
+      ((end.getMonth() === start.getMonth() + 1 && end.getFullYear() === start.getFullYear()) ||
+        (start.getMonth() === 11 && end.getMonth() === 0 && end.getFullYear() === start.getFullYear() + 1))
+    ) {
+      const months = [
+        'Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni',
+        'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December',
+      ];
+      return `${months[start.getMonth()]} ${start.getFullYear()}`;
+    }
+
+    return `${startTime.slice(0, 10)} — ${endTime.slice(0, 10)}`;
+  }
 }
