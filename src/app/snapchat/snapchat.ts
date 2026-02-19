@@ -1,5 +1,6 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { Subscription } from 'rxjs';
 import {
   SnapchatService,
   SnapReport,
@@ -14,31 +15,32 @@ import {
   templateUrl: './snapchat.html',
   styleUrl: './snapchat.scss',
 })
-export class Snapchat implements OnInit {
+export class Snapchat implements OnInit, OnDestroy {
   private readonly snapService = inject(SnapchatService);
+  private subscription?: Subscription;
 
   protected readonly savedReports = signal<SavedSnapReport[]>([]);
   protected readonly error = signal('');
   protected readonly isLoading = signal(true);
   protected readonly isDragging = signal(false);
 
-  async ngOnInit() {
-    await this.loadSaved();
+  ngOnInit() {
+    this.subscription = this.snapService.watchReports().subscribe({
+      next: reports => {
+        this.savedReports.set(reports);
+        this.isLoading.set(false);
+      },
+      error: (err: unknown) => {
+        const message =
+          err instanceof Error ? err.message : 'Failed to load reports';
+        this.error.set(message);
+        this.isLoading.set(false);
+      },
+    });
   }
 
-  private async loadSaved() {
-    this.isLoading.set(true);
-    this.error.set('');
-    try {
-      const reports = await this.snapService.loadReports();
-      this.savedReports.set(reports);
-    } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : 'Failed to load saved reports';
-      this.error.set(message);
-    } finally {
-      this.isLoading.set(false);
-    }
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
   }
 
   onFileSelected(event: Event) {
@@ -78,8 +80,7 @@ export class Snapchat implements OnInit {
       try {
         const text = await file.text();
         const report = this.snapService.parseJson(text);
-        const docId = await this.snapService.saveReport(report);
-        this.savedReports.update(list => [{ docId, report }, ...list]);
+        await this.snapService.saveReport(report);
       } catch (err: unknown) {
         const message =
           err instanceof Error ? err.message : 'Failed to parse file';
@@ -92,7 +93,6 @@ export class Snapchat implements OnInit {
     this.error.set('');
     try {
       await this.snapService.deleteReport(docId);
-      this.savedReports.update(list => list.filter(r => r.docId !== docId));
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : 'Failed to delete report';

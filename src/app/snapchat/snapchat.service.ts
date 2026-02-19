@@ -5,11 +5,12 @@ import {
   addDoc,
   deleteDoc,
   doc,
-  getDocs,
+  onSnapshot,
   orderBy,
   query,
   serverTimestamp,
 } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 
 export interface SpotlightRow {
@@ -91,15 +92,24 @@ export class SnapchatService {
     return docRef.id;
   }
 
-  async loadReports(): Promise<SavedSnapReport[]> {
+  watchReports(): Observable<SavedSnapReport[]> {
     const ref = collection(this.firestore, 'snapReports');
     const q = query(ref, orderBy('createdAt', 'desc'));
-    const snapshot = await getDocs(q);
 
-    return snapshot.docs.map(d => ({
-      docId: d.id,
-      report: d.data()['report'] as SnapReport,
-    }));
+    return new Observable<SavedSnapReport[]>(subscriber => {
+      const unsubscribe = onSnapshot(
+        q,
+        snapshot => {
+          const reports = snapshot.docs.map(d => ({
+            docId: d.id,
+            report: d.data()['report'] as SnapReport,
+          }));
+          subscriber.next(reports);
+        },
+        error => subscriber.error(error),
+      );
+      return unsubscribe;
+    });
   }
 
   async deleteReport(docId: string): Promise<void> {
