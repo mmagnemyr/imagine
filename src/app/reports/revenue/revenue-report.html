@@ -1,0 +1,71 @@
+<div class="report">
+  <h1>Revenue Report</h1>
+
+  @if (error()) {
+    <div class="error" role="alert">{{ error() }}</div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading">Loading revenue data...</div>
+  } @else {
+    <div class="date-range">
+      <label>
+        From
+        <input type="date" [(ngModel)]="startDate" (change)="onDateChange()" />
+      </label>
+      <label>
+        To
+        <input type="date" [(ngModel)]="endDate" (change)="onDateChange()" />
+      </label>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card revenue">
+        <span class="stat-label">Total Revenue</span>
+        <span class="stat-value">${{ totalRevenue() | number:'1.2-2' }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Ad Revenue</span>
+        <span class="stat-value">${{ totalAdRevenue() | number:'1.2-2' }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Avg CPM</span>
+        <span class="stat-value">${{ avgCpm() | number:'1.2-2' }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Monetized Playbacks</span>
+        <span class="stat-value">{{ totalMonetizedPlaybacks() | number }}</span>
+      </div>
+    </div>
+
+    <section class="table-section">
+      <h2>Daily Breakdown</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th class="th-num">Views</th>
+              <th class="th-num">Revenue</th>
+              <th class="th-num">Ad Revenue</th>
+              <th class="th-num">CPM</th>
+              <th class="th-num">Monetized</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track row['day']) {
+              <tr>
+                <td>{{ row['day'] }}</td>
+                <td class="td-num">{{ row['views'] | number }}</td>
+                <td class="td-num">${{ row['estimatedRevenue'] | number:'1.2-2' }}</td>
+                <td class="td-num">${{ row['estimatedAdRevenue'] | number:'1.2-2' }}</td>
+                <td class="td-num">${{ row['cpm'] | number:'1.2-2' }}</td>
+                <td class="td-num">{{ row['monetizedPlaybacks'] | number }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+</div>

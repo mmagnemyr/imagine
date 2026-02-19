@@ -1,0 +1,68 @@
+<div class="report">
+  <h1>Top Performers</h1>
+
+  @if (error()) {
+    <div class="error" role="alert">{{ error() }}</div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading">Loading top videos...</div>
+  } @else {
+    <div class="controls">
+      <div class="date-range">
+        <label>
+          From
+          <input type="date" [(ngModel)]="startDate" (change)="onDateChange()" />
+        </label>
+        <label>
+          To
+          <input type="date" [(ngModel)]="endDate" (change)="onDateChange()" />
+        </label>
+      </div>
+
+      <div class="sort-buttons">
+        @for (opt of sortOptions; track opt.value) {
+          <button
+            class="sort-btn"
+            [class.active]="sortField() === opt.value"
+            (click)="setSort(opt.value)">
+            {{ opt.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th class="th-rank">#</th>
+            <th class="th-thumb"></th>
+            <th>Title</th>
+            <th class="th-num">Views</th>
+            <th class="th-num">Watch Time</th>
+            <th class="th-num">Likes</th>
+            <th class="th-num">Revenue</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (video of sortedVideos(); track video.id; let i = $index) {
+            <tr>
+              <td class="td-rank">{{ i + 1 }}</td>
+              <td>
+                @if (video.thumbnail) {
+                  <img [src]="video.thumbnail" [alt]="video.title" class="video-thumb" />
+                }
+              </td>
+              <td class="video-title">{{ video.title }}</td>
+              <td class="td-num">{{ video.views | number }}</td>
+              <td class="td-num">{{ video.watchMinutes | number }}</td>
+              <td class="td-num">{{ video.likes | number }}</td>
+              <td class="td-num">${{ video.revenue | number:'1.2-2' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

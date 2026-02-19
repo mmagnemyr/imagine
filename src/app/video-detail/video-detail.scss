@@ -1,0 +1,151 @@
+:host {
+  display: block;
+}
+
+.video-detail {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: #302b63;
+  text-decoration: none;
+  font-size: 0.9rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.error {
+  background: #fdecea;
+  color: #d32f2f;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem;
+  color: #666;
+}
+
+.video-header {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  align-items: flex-start;
+}
+
+.video-thumbnail {
+  width: 320px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.video-info {
+  h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+  }
+}
+
+.published {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+  &.revenue {
+    background: #302b63;
+    color: white;
+
+    .stat-label {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.analytics-section {
+  h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead {
+    border-bottom: 1px solid #eee;
+  }
+
+  th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #888;
+    font-weight: 600;
+  }
+
+  .th-num {
+    text-align: right;
+  }
+
+  td {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #f5f5f5;
+  }
+
+  .td-num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  tr:hover {
+    background: #fafafa;
+  }
+}

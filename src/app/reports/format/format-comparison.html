@@ -1,0 +1,105 @@
+<div class="report">
+  <h1>Shorts vs Videos</h1>
+
+  @if (error()) {
+    <div class="error" role="alert">{{ error() }}</div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading">Loading format data...</div>
+  } @else {
+    <div class="comparison-grid">
+      <div class="format-card">
+        <h2>Shorts</h2>
+        <div class="format-stats">
+          <div class="format-stat">
+            <span class="stat-label">Count</span>
+            <span class="stat-value">{{ shortsStats().count }}</span>
+          </div>
+          <div class="format-stat">
+            <span class="stat-label">Total Views</span>
+            <span class="stat-value">{{ shortsStats().totalViews | number }}</span>
+          </div>
+          <div class="format-stat">
+            <span class="stat-label">Avg Views</span>
+            <span class="stat-value">{{ shortsStats().avgViews | number }}</span>
+          </div>
+          <div class="format-stat">
+            <span class="stat-label">Total Likes</span>
+            <span class="stat-value">{{ shortsStats().totalLikes | number }}</span>
+          </div>
+          <div class="format-stat">
+            <span class="stat-label">Avg Likes</span>
+            <span class="stat-value">{{ shortsStats().avgLikes | number }}</span>
+          </div>
+          <div class="format-stat">
+            <span class="stat-label">Comments</span>
+            <span class="stat-value">{{ shortsStats().totalComments | number }}</span>
+          </div>
+        </div>
+
+        <h3>Videos</h3>
+        <div class="video-list">
+          @for (video of shorts(); track video.id) {
+            <div class="video-item">
+              <img [src]="video.thumbnail" [alt]="video.title" class="video-thumb" />
+              <div class="video-meta">
+                <span class="video-title">{{ video.title }}</span>
+                <span class="video-stat">{{ video.viewCount | number }} views</span>
+              </div>
+            </div>
+          }
+          @empty {
+            <p class="empty">No shorts found.</p>
+          }
+        </div>
+      </div>
+
+      <div class="format-card">
+        <h2>Regular Videos</h2>
+        <div class="format-stats">
+          <div class="format-stat">
+            <span class="stat-label">Count</span>
+            <span class="stat-value">{{ regularStats().count }}</span>
+          </div>
+          <div class="format-stat">
+            <span class="stat-label">Total Views</span>
+            <span class="stat-value">{{ regularStats().totalViews | number }}</span>
+          </div>
+          <div class="format-stat">
+            <span class="stat-label">Avg Views</span>
+            <span class="stat-value">{{ regularStats().avgViews | number }}</span>
+          </div>
+          <div class="format-stat">
+            <span class="stat-label">Total Likes</span>
+            <span class="stat-value">{{ regularStats().totalLikes | number }}</span>
+          </div>
+          <div class="format-stat">
+            <span class="stat-label">Avg Likes</span>
+            <span class="stat-value">{{ regularStats().avgLikes | number }}</span>
+          </div>
+          <div class="format-stat">
+            <span class="stat-label">Comments</span>
+            <span class="stat-value">{{ regularStats().totalComments | number }}</span>
+          </div>
+        </div>
+
+        <h3>Videos</h3>
+        <div class="video-list">
+          @for (video of regular(); track video.id) {
+            <div class="video-item">
+              <img [src]="video.thumbnail" [alt]="video.title" class="video-thumb" />
+              <div class="video-meta">
+                <span class="video-title">{{ video.title }}</span>
+                <span class="video-stat">{{ video.viewCount | number }} views</span>
+              </div>
+            </div>
+          }
+          @empty {
+            <p class="empty">No regular videos found.</p>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

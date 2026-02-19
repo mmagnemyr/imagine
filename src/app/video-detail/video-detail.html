@@ -1,0 +1,76 @@
+<div class="video-detail">
+  <a routerLink="/" class="back-link">&larr; Back to Dashboard</a>
+
+  @if (error()) {
+    <div class="error" role="alert">{{ error() }}</div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading">Loading video data...</div>
+  } @else if (video(); as v) {
+    <div class="video-header">
+      <img [src]="v.thumbnail" [alt]="v.title" class="video-thumbnail" />
+      <div class="video-info">
+        <h1>{{ v.title }}</h1>
+        <p class="published">Published {{ v.publishedAt | date:'longDate' }}</p>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Views</span>
+        <span class="stat-value">{{ v.viewCount | number }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Likes</span>
+        <span class="stat-value">{{ v.likeCount | number }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Comments</span>
+        <span class="stat-value">{{ v.commentCount | number }}</span>
+      </div>
+      <div class="stat-card revenue">
+        <span class="stat-label">Revenue (90d)</span>
+        <span class="stat-value">${{ totalRevenue() | number:'1.2-2' }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Watch Time (90d)</span>
+        <span class="stat-value">{{ totalWatchMinutes() | number:'1.0-0' }} min</span>
+      </div>
+    </div>
+
+    @if (analyticsRows().length) {
+      <section class="analytics-section">
+        <h2>Daily Analytics (last 90 days)</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th class="th-num">Views</th>
+                <th class="th-num">Watch Time (min)</th>
+                <th class="th-num">Avg Duration (s)</th>
+                <th class="th-num">Likes</th>
+                <th class="th-num">Subs Gained</th>
+                <th class="th-num">Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of analyticsRows(); track row['day']) {
+                <tr>
+                  <td>{{ row['day'] }}</td>
+                  <td class="td-num">{{ row['views'] | number }}</td>
+                  <td class="td-num">{{ row['estimatedMinutesWatched'] | number:'1.0-0' }}</td>
+                  <td class="td-num">{{ row['averageViewDuration'] | number:'1.0-0' }}</td>
+                  <td class="td-num">{{ row['likes'] | number }}</td>
+                  <td class="td-num">{{ row['subscribersGained'] | number }}</td>
+                  <td class="td-num">${{ row['estimatedRevenue'] | number:'1.2-2' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    }
+  }
+</div>

@@ -1,0 +1,79 @@
+<div class="dashboard">
+  <h1>Dashboard</h1>
+
+  @if (error()) {
+    <div class="error" role="alert">{{ error() }}</div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading">Loading YouTube data...</div>
+  } @else {
+    <div class="date-range">
+      <label>
+        From
+        <input type="date" [(ngModel)]="startDate" (change)="onDateChange()" />
+      </label>
+      <label>
+        To
+        <input type="date" [(ngModel)]="endDate" (change)="onDateChange()" />
+      </label>
+    </div>
+
+    @if (channel(); as ch) {
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">Subscribers</span>
+          <span class="stat-value">{{ ch.subscriberCount | number }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Total Views</span>
+          <span class="stat-value">{{ ch.viewCount | number }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Videos</span>
+          <span class="stat-value">{{ ch.videoCount | number }}</span>
+        </div>
+        <div class="stat-card revenue">
+          <span class="stat-label">Revenue (period)</span>
+          <span class="stat-value">${{ totalRevenue() | number:'1.2-2' }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Views (period)</span>
+          <span class="stat-value">{{ totalViews() | number }}</span>
+        </div>
+      </div>
+    }
+
+    <section class="videos-section">
+      <h2>Videos</h2>
+      <div class="video-table-wrapper">
+        <table class="video-table">
+          <thead>
+            <tr>
+              <th class="th-thumbnail"></th>
+              <th>Title</th>
+              <th class="th-num">Views</th>
+              <th class="th-num">Likes</th>
+              <th class="th-num">Comments</th>
+              <th class="th-num">Published</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (video of videos(); track video.id) {
+              <tr class="video-row" [routerLink]="['/video', video.id]">
+                <td>
+                  <img [src]="video.thumbnail" [alt]="video.title" class="video-thumb" />
+                </td>
+                <td class="video-title">{{ video.title }}</td>
+                <td class="td-num">{{ video.viewCount | number }}</td>
+                <td class="td-num">{{ video.likeCount | number }}</td>
+                <td class="td-num">{{ video.commentCount | number }}</td>
+                <td class="td-num">{{ video.publishedAt | date:'mediumDate' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+</div>

@@ -1,0 +1,77 @@
+<div class="report">
+  <h1>Growth Report</h1>
+
+  @if (error()) {
+    <div class="error" role="alert">{{ error() }}</div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading">Loading growth data...</div>
+  } @else {
+    <div class="date-range">
+      <label>
+        From
+        <input type="date" [(ngModel)]="startDate" (change)="onDateChange()" />
+      </label>
+      <label>
+        To
+        <input type="date" [(ngModel)]="endDate" (change)="onDateChange()" />
+      </label>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card revenue">
+        <span class="stat-label">Net Subscribers</span>
+        <span class="stat-value">{{ netSubscribers() >= 0 ? '+' : '' }}{{ netSubscribers() | number }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Subs Gained</span>
+        <span class="stat-value">+{{ totalSubsGained() | number }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Subs Lost</span>
+        <span class="stat-value">-{{ totalSubsLost() | number }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Total Views</span>
+        <span class="stat-value">{{ totalViews() | number }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Watch Time (min)</span>
+        <span class="stat-value">{{ totalWatchMinutes() | number }}</span>
+      </div>
+    </div>
+
+    <section class="table-section">
+      <h2>Daily Breakdown</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th class="th-num">Views</th>
+              <th class="th-num">Watch Time</th>
+              <th class="th-num">Avg Duration</th>
+              <th class="th-num">Likes</th>
+              <th class="th-num">Subs Gained</th>
+              <th class="th-num">Subs Lost</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track row['day']) {
+              <tr>
+                <td>{{ row['day'] }}</td>
+                <td class="td-num">{{ row['views'] | number }}</td>
+                <td class="td-num">{{ row['estimatedMinutesWatched'] | number }}</td>
+                <td class="td-num">{{ row['averageViewDuration'] | number:'1.0-0' }}s</td>
+                <td class="td-num">{{ row['likes'] | number }}</td>
+                <td class="td-num">+{{ row['subscribersGained'] | number }}</td>
+                <td class="td-num">-{{ row['subscribersLost'] | number }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+</div>

@@ -1,0 +1,26 @@
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1 class="app-title">Imagine</h1>
+    </div>
+    <ul class="nav-list">
+      @for (item of navItems; track item.path) {
+        <li>
+          <a [routerLink]="item.path"
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+             class="nav-link">
+            {{ item.label }}
+          </a>
+        </li>
+      }
+    </ul>
+    <div class="sidebar-footer">
+      <span class="user-email">{{ authService.currentUser()?.email }}</span>
+      <button class="btn-outline" (click)="onLogout()">Sign Out</button>
+    </div>
+  </nav>
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>
