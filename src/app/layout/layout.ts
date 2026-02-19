@@ -25,7 +25,7 @@ export class Layout implements OnInit {
   ];
 
   ngOnInit() {
-    this.exchangeRate.fetch();
+    this.exchangeRate.startPolling();
   }
 
   async onLogout() {
