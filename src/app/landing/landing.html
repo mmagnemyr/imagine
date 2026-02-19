@@ -1,7 +1,7 @@
 <div class="landing">
-  <div class="hero">
-    <img src="logo.png" alt="Imagine" class="hero-logo" />
-    <h1 class="title">Imagine</h1>
+  <canvas #particleCanvas class="particle-canvas"></canvas>
+  <img src="logo.png" alt="Imagine" class="hero-logo" (mouseenter)="onLogoHover()" />
+  <div class="hero-bottom">
     <p class="tagline">Never stop learning</p>
     <a routerLink="/login" class="cta">Sign In</a>
   </div>

@@ -4,39 +4,49 @@
 }
 
 .landing {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
   min-height: 100vh;
   background: #000;
-  padding: 2rem;
+  overflow: hidden;
 }
 
-.hero {
-  text-align: center;
+.particle-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
 .hero-logo {
-  width: clamp(100px, 25vw, 180px);
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(80px, 18vw, 140px);
   height: auto;
-  margin-bottom: 1.5rem;
-  filter: none;
+  z-index: 1;
+  pointer-events: all;
+  cursor: pointer;
 }
 
-.title {
-  font-size: clamp(3rem, 10vw, 6rem);
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
+.hero-bottom {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  text-align: center;
+  pointer-events: none;
 }
 
 .tagline {
   font-size: clamp(1rem, 3vw, 1.5rem);
   color: rgba(255, 255, 255, 0.6);
-  margin: 1rem 0 3rem;
+  margin: 0 0 2rem;
   font-weight: 300;
+  white-space: nowrap;
 }
 
 .cta {
@@ -48,10 +58,11 @@
   font-weight: 600;
   border-radius: 50px;
   text-decoration: none;
+  pointer-events: all;
   transition: transform 0.2s, box-shadow 0.2s;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 30px rgba(2, 119, 204, 0.4);
   }
 }
